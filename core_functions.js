@@ -4,22 +4,28 @@ var fileFunctions  = require('./file');
 var queryFunctions = require('./query');
 var table = require('./config')['table'];
 
-function add_migration(argv, path, cb) {
-  fileFunctions.validate_file_name(argv[4]);
+function add_migration(args, path, cb) {
+  fileFunctions.validate_file_name(args[1]);
   fileFunctions.readFolder(path, function (files) {
-    var file_name = Date.now() + "_" + argv[4];
+    var file_name = Date.now() + "_" + args[1];
     var file_path = path + '/' + file_name + '.js';
 
     var sql_json = {
       up   : '',
-      down : ''
+      down : '',
     };
 
-    if (argv.length > 5) {
-      sql_json['up'] = argv[5];
+    if (args.length > 2) {
+      sql_json['up'] = args[2];
     }
 
-    var content = 'module.exports = ' + JSON.stringify(sql_json, null, 4);
+    var content = 'module.exports = ' +
+      JSON.stringify(sql_json, null, 2)
+        .replace(/"(up|down)"/g, '$1')
+        .replace(/",?(?=\n)/g, '`,')
+        .replace(/"/g, '`') +
+      ';\n';
+
     fs.writeFile(file_path, content, 'utf-8', function (err) {
       if (err) {
         throw err;

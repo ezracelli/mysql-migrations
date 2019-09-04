@@ -15,9 +15,9 @@ describe('core_functions.js', function() {
 
   context('add_migration', function () {
     it('should add migration', function (done) {
-      var commands = ['node', 'migration', 'add', 'migration', 'create_user2'];
+      var args = ['migration', 'create_user2'];
       var path = __dirname +  '/migrations';
-      coreFunctions.add_migration(commands, path, function () {
+      coreFunctions.add_migration(args, path, function () {
         fs.readdirSync(path).forEach(function(file,index){
           assert.ok(file.indexOf('create_user2'));
         });
